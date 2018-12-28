@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cyb.dto.User;
 import com.cyb.dto.UserQueryCondition;
+import com.cyb.exception.UserNotExistException;
 import com.fasterxml.jackson.annotation.JsonView;
 
 /**
@@ -59,13 +60,14 @@ public class UserControll {
 	
 
 	@PostMapping
-	public User create(@Valid @RequestBody User user , BindingResult errors)
+//	public User create(@Valid @RequestBody User user , BindingResult errors)
+	public User create(@Valid @RequestBody User user )
 	{
-		if(errors.hasErrors())
-		{
-			errors.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage()));
-		}
-		
+//		if(errors.hasErrors())
+//		{
+//			errors.getAllErrors().stream().forEach(error -> System.out.println(error.getDefaultMessage()));
+//		}
+//		
 		System.out.println(user.toString());
 		user.setId("1");
 		return user;
@@ -92,9 +94,11 @@ public class UserControll {
 	@JsonView(User.UserDetailView.class)
 	public User getInfo(@PathVariable String id )
 	{
-		User user = new User();
-		user.setUsername("tom");
-		return user;
+		throw new UserNotExistException("123");
+		
+//		User user = new User();
+//		user.setUsername("tom");
+//		return user;
 	}
 	
 	
