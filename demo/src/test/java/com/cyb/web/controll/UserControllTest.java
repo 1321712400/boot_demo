@@ -1,12 +1,14 @@
 package com.cyb.web.controll;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -17,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -108,6 +111,16 @@ public class UserControllTest {
 				
 	}
 	
+	
+	@Test
+	public void whenUploadSuccess() throws UnsupportedEncodingException, Exception
+	{
+		String result = mockmvc.perform(fileUpload("/file")
+				.file(new MockMultipartFile("file", "test.txt" , "multiport/form-data","hello upload".getBytes("utf-8"))))
+				.andExpect(status().isOk())
+				.andReturn().getResponse().getContentAsString();
+		System.out.println(result);
+	}
 	
 	
 	
