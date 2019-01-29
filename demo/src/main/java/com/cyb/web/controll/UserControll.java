@@ -9,6 +9,11 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +41,15 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("/user")
 public class UserControll {
+	
+	
+	
+	@GetMapping("/me")
+	public Object getCurrenUser(@AuthenticationPrincipal UserDetails authentication)
+	{
+		return authentication;
+	}
+	
 	@DeleteMapping("/{id:\\d+}")
 	public void delete(@PathVariable String id)
 	{
@@ -76,8 +90,6 @@ public class UserControll {
 		user.setId("1");
 		return user;
 	}
-	
-	
 	@GetMapping
 	@JsonView(User.UserSimpleView.class)
 	@ApiOperation(value = "用户查询服务")
@@ -94,7 +106,6 @@ public class UserControll {
 		user.add(new User());
 		return user;
 	}
-	
 	@GetMapping("/{id:\\d+}")
 	@JsonView(User.UserDetailView.class)
 	public User getInfo(@ApiParam("用户ID") @PathVariable String id )
