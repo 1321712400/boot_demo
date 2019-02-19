@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.cyb.security.core.properties.SecurityProperties;
 
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean{
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean{
 	
 	private AuthenticationFailureHandler authenticationFailureHandler;
 	
@@ -38,11 +38,11 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	@Override
 	public void afterPropertiesSet() throws ServletException {
 		super.afterPropertiesSet();
-		String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getImage().getUrl(),",");
+		String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(securityProperties.getCode().getSms().getUrl(),",");
 		for (String string : configUrls) {
 			urls.add(string);
 		}
-		urls.add("/authentication/form");
+		urls.add("/authentication/mobile");
 	}
 	
 
@@ -80,9 +80,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 	}
 
 	private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-		ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY);
+		ValidateCode codeInSession = (ValidateCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY+"SMS");
 		
-		String codeInReuqest = ServletRequestUtils.getStringParameter(request.getRequest() , "imageCode");
+		String codeInReuqest = ServletRequestUtils.getStringParameter(request.getRequest() , "smsCode");
 		
 		if(StringUtils.isBlank(codeInReuqest))
 		{
@@ -94,7 +94,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 		}
 		if(codeInSession.isExpried())
 		{
-			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+			sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY+"SMS");
 			throw new ValidateCodeException("验证码已过期");
 		}
 		if(!StringUtils.equals(codeInSession.getCode(), codeInReuqest))
@@ -102,7 +102,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 			throw new ValidateCodeException("验证码不匹配");
 		}
 		
-		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+		sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY+"SMS");
 	}
 
 	public AuthenticationFailureHandler getAuthenticationFailureHandler() {

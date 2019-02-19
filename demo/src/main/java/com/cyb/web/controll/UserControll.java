@@ -116,6 +116,11 @@ public class UserControll {
 		user.setUsername("tom");
 		return user;
 	}
+	@GetMapping("chen")
+	public String chen()
+	{
+		return "chen";
+	}
 	
 	
 }

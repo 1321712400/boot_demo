@@ -1,5 +1,7 @@
 package com.cyb.web.async;
 
+import static org.mockito.Matchers.startsWith;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ public class MockQueue {
 			logger.info("下单请求处理完毕"+placeOrder);
 			
 		}).start();
+		
 		
 		
 	}
